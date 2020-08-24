@@ -1,0 +1,29 @@
+-- Initialize the database.
+-- Drop any existing data and create empty tables.
+
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS task;
+DROP TABLE IF EXISTS vote;
+
+CREATE TABLE user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);
+
+CREATE TABLE task (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  img_0 TEXT NOT NULL,
+  img_1 TEXT NOT NULL
+);
+
+CREATE TABLE vote (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  task_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  selection INTEGER NOT NULL,
+  FOREIGN KEY (task_id) REFERENCES task (id),
+  FOREIGN KEY (user_id) REFERENCES user (id)
+);

@@ -11,7 +11,7 @@ from flask import url_for
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from flaskr.db import get_db
+from paircomp.db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -43,8 +43,8 @@ def load_logged_in_user():
         )
 
 
-@bp.route("/register", methods=("GET", "POST"))
-def register():
+@bp.route("/signup", methods=("GET", "POST"))
+def signup():
     """Register a new user.
 
     Validates that the username is not already taken. Hashes the
@@ -74,11 +74,32 @@ def register():
                 (username, generate_password_hash(password)),
             )
             db.commit()
-            return redirect(url_for("auth.login"))
+            return login_and_redirect(username=username)
 
-        flash(error)
+        flash(error, "danger")
 
-    return render_template("auth/register.html")
+    return render_template("signup.html")
+
+
+def login_and_redirect(username=None, user=None):
+    if user is not None:
+        username = user["username"]
+        msg_type = "logged in"
+    elif username is not None:
+        db = get_db()
+        user = db.execute(
+            "SELECT * FROM user WHERE username = ?", (username,)
+        ).fetchone()
+        msg_type = "registered"
+    else:
+        raise RuntimeError
+
+    # store the user id in a new session and return to the index
+    session.clear()
+    session["user_id"] = user["id"]
+    msg = f"You have successfully {msg_type}. Welcome {username}!"
+    flash(msg, "success")
+    return redirect(url_for("index"))
 
 
 @bp.route("/login", methods=("GET", "POST"))
@@ -99,14 +120,11 @@ def login():
             error = "Incorrect password."
 
         if error is None:
-            # store the user id in a new session and return to the index
-            session.clear()
-            session["user_id"] = user["id"]
-            return redirect(url_for("index"))
+            return login_and_redirect(user=user)
 
-        flash(error)
+        flash(error, "danger")
 
-    return render_template("auth/login.html")
+    return render_template("login.html")
 
 
 @bp.route("/logout")

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav class="text-right pt-2 pr-4">
+  User: <span class="pr-2">{{ g.user['username'] }}</span>
+  <a href="{{ url_for('auth.logout') }}">Log out</a>
+</nav>
+
+<div class="container comparison">
+  {% if imgs|length > 0 %}
+    <div class="text-center py-4">
+      <h1>Which one do you like?</h1>
+    </div>
+    <form method="post">
+      <div class="row">
+        <div class="col col-12 col-sm-6 form-check" id="imgA">
+          <input class="form-check-input" type="radio" name="vote" value="{{ imgs[0] }}" id="btn_imgA" required>
+          <label class="form-check-label" for="btn_imgA">
+            <img class="img-fluid" src="{{ url_for('static', filename=imgs[0]) }}" >
+          </label>
+        </div>
+        <div class="col col-12 col-sm-6 form-check" id="imgB">
+          <input class="form-check-input" type="radio" name="vote" value="{{ imgs[1] }}" id="btn_imgB" required>
+          <label class="form-check-label" for="btn_imgB">
+            <img class="img-fluid" src="{{ url_for('static', filename=imgs[1]) }}" >
+          </label>
+        </div>
+      </div>
+      <div class="text-center py-4">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  {% else %}
+    <div class="text-center py-4">
+      <h1>You have completed all tasks!</h1>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $('input[type=radio][name=vote]').change(function() {
+    if (this.value == "{{ imgs[0] }}") {
+      $("#imgA img").css("border-color", "#ff4444");
+      $("#imgB img").css("border-color", "transparent");
+    }else if (this.value == "{{ imgs [1] }}") {
+      $("#imgB img").css("border-color", "#ff4444");
+      $("#imgA img").css("border-color", "transparent");
+    }
+  });
+</script>
+{% endblock %}
