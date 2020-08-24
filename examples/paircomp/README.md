@@ -10,8 +10,8 @@ The simple app of pairwise comparison for image data.
 Clone this repository.
 
 ```
-$ git clone https://github.com/ktrk115/flask
-$ cd flask/examples/paircomp
+$ git clone https://github.com/ktrk115/paircomp
+$ cd paircomp/examples/paircomp
 ```
 
 Create a virtualenv and activate it.
