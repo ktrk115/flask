@@ -1,3 +1,7 @@
+Check `README <examples/paircomp>`_ for PairComp.
+----------
+
+
 Flask
 =====
 
